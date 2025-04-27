@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,14 +33,55 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts',
     'rest_framework',
+    'rest_framework_simplejwt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    # Optional -- requires install using `django-allauth[socialaccount]`.
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'rest_framework_simplejwt.token_blacklist',
+
 ]
+
+SIMPLE_JWT = {
+    # 액세스 토큰 수명
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    # 리프레시 토큰 수명
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    # 리프레시 토큰 재발급 시 블랙리스트 처리
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': [
+       'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+   ],
+}
+
+
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'TOKEN_MODEL':None,
+    'JWT_AUTH_COOKIE':'access_token',
+    'JWT_AUTH_REFRESH_COOKIE':'refresh_token'
+}
+
+
+
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +91,30 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+]
+
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('CLIENT_ID'),
+            'secret': config('SECRET'),
+            'key': ''
+        }
+    }
+}
+
+SITE_ID = 1
+
+# allauth 기본 설정 (이메일 인증 OFF, username 인증)
+ACCOUNT_LOGIN_METHODS = ['username']
+ACCOUNT_SIGNUP_FIELDS = [
+    'username*',      # 필수
+    'email',
+    'password1*',     # 필수
+    'password2*',     # 필수
 ]
 
 ROOT_URLCONF = 'quizpjt.urls'
@@ -66,6 +132,13 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',    
 ]
 
 WSGI_APPLICATION = 'quizpjt.wsgi.application'
