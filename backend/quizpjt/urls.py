@@ -17,6 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from accounts.views import GoogleLogin
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Quiz Web Service API",
+        default_version='v1',
+        description="API documentation for the Quiz project",
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +39,6 @@ urlpatterns = [
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
     # 소셜 로그인 (구글)
     path('api/auth/google/', GoogleLogin.as_view(), name='google_login'),
+    # swagger
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
