@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'quizzes',
     'drf_yasg',
     'accounts',
     'rest_framework',
