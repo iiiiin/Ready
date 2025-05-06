@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'quizzes',
     'drf_yasg',
     'accounts',
     'rest_framework',
@@ -150,8 +151,12 @@ WSGI_APPLICATION = 'quizpjt.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE':   'django.db.backends.postgresql',
+        'NAME':     config('DB_NAME'),          # DB 이름
+        'USER':     config('DB_USER'),          # 생성한 DB 사용자
+        'PASSWORD': config('DB_PASSWORD'),      # 사용자 비밀번호
+        'HOST':     config('DB_HOST'),          # 
+        'PORT':     config('DB_PORT'),          # 기본 포트
     }
 }
 
