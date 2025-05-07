@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'quizzes',
     'drf_yasg',
     'accounts',
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     'django.contrib.admin',
@@ -86,6 +87,9 @@ REST_AUTH = {
 AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
+    # CORS 에러 처리
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -96,6 +100,10 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
+# 모든 도메인에 대해 허용(임시)
+CORS_ORIGIN_ALLOW_ALL = True
+# JWT 쿠키 인증 방식 허용(임시)
+CORS_ALLOW_CREDENTIALS = True
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
